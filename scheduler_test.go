@@ -2,10 +2,11 @@ package chrono
 
 import (
 	"context"
-	"github.com/stretchr/testify/assert"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestDefaultTaskScheduler(t *testing.T) {
@@ -21,6 +22,25 @@ func TestDefaultTaskScheduler(t *testing.T) {
 	assert.Nil(t, err)
 
 	<-time.After(2 * time.Second)
+	assert.True(t, task.IsCancelled(), "scheduled task must have been cancelled")
+	assert.True(t, counter == 1,
+		"number of scheduled task execution must be 1, actual: %d", counter)
+}
+
+func TestDefaultTaskSchedulerExactTime(t *testing.T) {
+	scheduler := NewDefaultTaskScheduler()
+
+	var counter int32
+	now := time.Now().Add(time.Second*2 + time.Nanosecond*555)
+
+	task, err := scheduler.Schedule(func(ctx context.Context) {
+		atomic.AddInt32(&counter, 1)
+		t.Log(now.String(), " ->> ", time.Now().String())
+	}, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), now.Nanosecond()))
+
+	assert.Nil(t, err)
+
+	<-time.After(3 * time.Second)
 	assert.True(t, task.IsCancelled(), "scheduled task must have been cancelled")
 	assert.True(t, counter == 1,
 		"number of scheduled task execution must be 1, actual: %d", counter)
