@@ -16,7 +16,7 @@ func TestDefaultTaskScheduler(t *testing.T) {
 
 	task, err := scheduler.Schedule(func(ctx context.Context) {
 		atomic.AddInt32(&counter, 1)
-	}, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1))
+	}, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1, now.Nanosecond()))
 
 	assert.Nil(t, err)
 
@@ -71,7 +71,7 @@ func TestSimpleTaskScheduler_WithoutScheduledExecutor(t *testing.T) {
 
 	task, err := scheduler.Schedule(func(ctx context.Context) {
 		atomic.AddInt32(&counter, 1)
-	}, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1))
+	}, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1, now.Nanosecond()))
 
 	assert.Nil(t, err)
 
@@ -89,7 +89,7 @@ func TestSimpleTaskScheduler_Schedule_OneShotTask(t *testing.T) {
 
 	task, err := scheduler.Schedule(func(ctx context.Context) {
 		atomic.AddInt32(&counter, 1)
-	}, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1))
+	}, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1, now.Nanosecond()))
 
 	assert.Nil(t, err)
 
@@ -126,7 +126,7 @@ func TestSimpleTaskScheduler_ScheduleWithFixedDelayWithStartTimeOption(t *testin
 	task, err := scheduler.ScheduleWithFixedDelay(func(ctx context.Context) {
 		atomic.AddInt32(&counter, 1)
 		<-time.After(500 * time.Millisecond)
-	}, 200*time.Millisecond, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1))
+	}, 200*time.Millisecond, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1, now.Nanosecond()))
 
 	assert.Nil(t, err)
 
@@ -162,7 +162,7 @@ func TestSimpleTaskScheduler_ScheduleAtFixedRateWithStartTimeOption(t *testing.T
 	task, err := scheduler.ScheduleAtFixedRate(func(ctx context.Context) {
 		atomic.AddInt32(&counter, 1)
 		<-time.After(500 * time.Millisecond)
-	}, 200*time.Millisecond, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1))
+	}, 200*time.Millisecond, WithStartTime(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second()+1, now.Nanosecond()))
 
 	assert.Nil(t, err)
 

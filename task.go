@@ -45,8 +45,8 @@ func (task *SchedulerTask) GetInitialDelay() time.Duration {
 	}
 
 	now := time.Now().In(task.location)
-	diff := time.Date(task.startTime.Year(), task.startTime.Month(), task.startTime.Day(), task.startTime.Hour(), task.startTime.Minute(), task.startTime.Second(), 0, time.Local).Sub(
-		time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), 0, time.Local))
+	diff := time.Date(task.startTime.Year(), task.startTime.Month(), task.startTime.Day(), task.startTime.Hour(), task.startTime.Minute(), task.startTime.Second(), task.startTime.Nanosecond(), time.Local).Sub(
+		time.Date(now.Year(), now.Month(), now.Day(), now.Hour(), now.Minute(), now.Second(), now.Nanosecond(), time.Local))
 
 	if diff < 0 {
 		return 0
@@ -57,9 +57,9 @@ func (task *SchedulerTask) GetInitialDelay() time.Duration {
 
 type Option func(task *SchedulerTask) error
 
-func WithStartTime(year int, month time.Month, day, hour, min, sec int) Option {
+func WithStartTime(year int, month time.Month, day, hour, min, sec, nsec int) Option {
 	return func(task *SchedulerTask) error {
-		task.startTime = time.Date(year, month, day, hour, min, sec, 0, time.Local)
+		task.startTime = time.Date(year, month, day, hour, min, sec, nsec, time.Local)
 		return nil
 	}
 }
@@ -123,7 +123,9 @@ func (scheduledRunnableTask *ScheduledRunnableTask) IsCancelled() bool {
 }
 
 func (scheduledRunnableTask *ScheduledRunnableTask) getDelay() time.Duration {
-	return scheduledRunnableTask.triggerTime.Sub(time.Now())
+	// TODO: check if this is correct
+	return time.Until(scheduledRunnableTask.triggerTime)
+	// return scheduledRunnableTask.triggerTime.Sub(time.Now())
 }
 
 func (scheduledRunnableTask *ScheduledRunnableTask) isPeriodic() bool {
@@ -205,7 +207,9 @@ func (task *TriggerTask) Schedule() (ScheduledTask, error) {
 		return nil, errors.New("could not schedule task because of the fact that schedule time is zero")
 	}
 
-	initialDelay := task.nextTriggerTime.Sub(time.Now())
+	// TODO: check if this is correct
+	initialDelay := time.Until(task.nextTriggerTime)
+	//initialDelay := task.nextTriggerTime.Sub(time.Now())
 
 	currentScheduledTask, err := task.executor.Schedule(task.Run, initialDelay)
 

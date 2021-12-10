@@ -3,10 +3,11 @@ package chrono
 import (
 	"context"
 	"errors"
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
+
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 )
 
 func TestNewSchedulerTask(t *testing.T) {
@@ -54,6 +55,7 @@ func TestNewTriggerTask(t *testing.T) {
 	_, err = CreateTriggerTask(func(ctx context.Context) {
 
 	}, NewDefaultTaskExecutor(), nil)
+	assert.Error(t, err)
 }
 
 type zeroTrigger struct {

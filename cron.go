@@ -214,7 +214,7 @@ func parseField(value string, fieldType fieldType) (*cronFieldBits, error) {
 				return nil, err
 			}
 
-			if strings.Index(rangeStr, "-") == -1 {
+			if !strings.Contains(rangeStr, "-") {
 				valueRange = newValueRange(valueRange.MinValue, fieldType.MaxValue)
 			}
 
