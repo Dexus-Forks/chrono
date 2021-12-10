@@ -1,4 +1,4 @@
-module github.com/procyon-projects/chrono
+module github.com/Dexus-Forks/chrono
 
 go 1.13
 
